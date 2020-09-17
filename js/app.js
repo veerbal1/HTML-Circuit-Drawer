@@ -51,8 +51,7 @@ window.onload = () => {
     a.download = 'data.json';
     a.href = "data:text/json;charset=utf-8," + encodeURIComponent(data);
     a.innerHTML = 'Download data'
-    document.body.appendChild(a);
-    // a.click();
+    a.click();
     console.log(a);
 
   });
