@@ -31,6 +31,7 @@ window.onload = () => {
     circle.y = e.stageY;
     oldX = e.stageX;
     oldY = e.stageY;
+
     // Add info to json array
     addDotInfo(serialNumber, circle.x, circle.y);
 
@@ -45,15 +46,10 @@ window.onload = () => {
     });
   });
   downloadBtn.addEventListener("click", () => {
-   var data = JSON.stringify(jsonData);
-    // console.log(data);
     const a = document.createElement('a');
     a.download = 'data.json';
-    a.href = "data:text/json;charset=utf-8," + encodeURIComponent(data);
-    a.innerHTML = 'Download data'
+    a.href = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(jsonData));
     a.click();
-    console.log(a);
-
   });
 };
 
