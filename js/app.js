@@ -7,11 +7,11 @@ var initialPointData = {
 let serialNumber = 1;
 let oldX;
 let oldY;
-let color = "#FF0000";
+let color = "#00FF00";
 let size = 2;
 const CANVAS_WIDTH_HEIGHT = 512;
 let downloadBtn = null;
-let dottedCycle = false;
+let closedCycle = false;
 
 window.onload = () => {
   downloadBtn = document.getElementById("download");
@@ -22,13 +22,14 @@ window.onload = () => {
   stage.canvas.style.backgroundColor = "#000";
 
   stage.on("stagemousedown", (e) => {
-    console.log(checkDotAlreadyPresent(e));
-
     var line = new createjs.Shape();
     var circle = new createjs.Shape();
     circle.graphics.beginFill(color).drawCircle(0, 0, 2);
-
-    if (!checkDotAlreadyPresent(e) && !dottedCycle) {
+    if (
+      !(Math.abs(initialPointData.initialPoint.xPosition - e.stageX) <= 3) &&
+      !(Math.abs(initialPointData.initialPoint.yPosition - e.stageY) <= 3) &&
+      !closedCycle
+    ) {
       // Draw line
       line.graphics
         .beginStroke("#fff")
@@ -41,23 +42,51 @@ window.onload = () => {
       circle.y = e.stageY;
       oldX = e.stageX;
       oldY = e.stageY;
+    } else if (
+      Math.abs(initialPointData.initialPoint.xPosition - e.stageX) <= 3 &&
+      Math.abs(initialPointData.initialPoint.yPosition - e.stageY) <= 3
+    ) {
+      console.log(
+        Math.abs(initialPointData.initialPoint.xPosition - e.stageX),
+        Math.abs(initialPointData.initialPoint.yPosition - e.stageY)
+      );
+      // Draw line
+      line.graphics
+        .beginStroke("#fff")
+        .setStrokeStyle(1, "round")
+        .moveTo(oldX, oldY)
+        .lineTo(
+          initialPointData.initialPoint.xPosition,
+          initialPointData.initialPoint.yPosition
+        );
+
+      // Draw Dot
+      circle.x = initialPointData.initialPoint.xPosition;
+      circle.y = initialPointData.initialPoint.YPosition;
+      oldX = initialPointData.initialPoint.xPosition;
+      oldY = initialPointData.initialPoint.YPosition;
+      console.log("Locked");
+
+      closedCycle = true;
     }
 
     // Show message when a closed cycle made (Lock drawing more line with dot)
-    if (dottedCycle) {
+    if (closedCycle) {
       console.info(
         "Have come to same point so drawing locked leaving a closed cycle"
       );
     }
 
     // Change dot color after first Click
-    color = !checkDotAlreadyPresent(e) ? "#FFA500" : "#008000";
+    // color = !checkNearInitialPoint(e) ? "#FFA500" : "#008000";
+
     // Add info to json array
     addDotInfo(serialNumber, circle.x, circle.y);
 
     stage.addChild(line);
     stage.addChild(circle);
     stage.update();
+    color = "#008000";
   });
 
   downloadBtn.addEventListener("click", () => {
@@ -68,21 +97,6 @@ window.onload = () => {
       encodeURIComponent(JSON.stringify(jsonData));
     a.click();
   });
-};
-
-const checkDotAlreadyPresent = (e) => {
-  let value = false;
-  jsonData.forEach((obj) => {
-    if (obj.xPosition === e.stageX && obj.yPosition === e.stageY) {
-      value = true;
-      dottedCycle = true;
-      console.log(
-        `${obj.xPosition} ${e.stageX}`,
-        `${obj.yPosition} ${e.stageY}`
-      );
-    }
-  });
-  return value;
 };
 
 const addDotInfo = (sid, xPos, YPos) => {
