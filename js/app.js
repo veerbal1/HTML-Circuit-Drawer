@@ -38,17 +38,14 @@ window.onload = () => {
     stage.addChild(line);
     stage.addChild(circle);
     stage.update();
-    // color = createjs.Graphics.getHSL(Math.random()*360, 100, 50);
-    const istrueorfalse = jsonData.find((obj) => {
-      console.log(obj);
-
-      return obj.xPosition == 225;
-    });
   });
+
   downloadBtn.addEventListener("click", () => {
-    const a = document.createElement('a');
-    a.download = 'data.json';
-    a.href = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(jsonData));
+    const a = document.createElement("a");
+    a.download = "data.json";
+    a.href =
+      "data:text/json;charset=utf-8," +
+      encodeURIComponent(JSON.stringify(jsonData));
     a.click();
   });
 };
