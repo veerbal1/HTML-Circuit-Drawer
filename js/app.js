@@ -82,11 +82,11 @@ window.onload = () => {
 
     // Add info to json array
     addDotInfo(serialNumber, circle.x, circle.y);
-
+    color = "#FF4500";
     stage.addChild(line);
     stage.addChild(circle);
     stage.update();
-    color = "#008000";
+    // color = "#00F";
   });
 
   downloadBtn.addEventListener("click", () => {
