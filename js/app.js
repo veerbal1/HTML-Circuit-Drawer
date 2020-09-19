@@ -66,7 +66,6 @@ window.onload = () => {
       oldX = initialPointData.initialPoint.xPosition;
       oldY = initialPointData.initialPoint.YPosition;
       console.log("Locked");
-
       closedCycle = true;
     }
 
@@ -88,7 +87,6 @@ window.onload = () => {
     stage.update();
     // color = "#00F";
   });
-
   downloadBtn.addEventListener("click", () => {
     const a = document.createElement("a");
     a.download = "data.json";
@@ -100,16 +98,20 @@ window.onload = () => {
 };
 
 const addDotInfo = (sid, xPos, YPos) => {
-  if (!initialPointData.gotInitialPoint) {
-    initialPointData.initialPoint.sNo = sid;
-    initialPointData.initialPoint.xPosition = xPos;
-    initialPointData.initialPoint.yPosition = YPos;
-    initialPointData.gotInitialPoint = true;
+  if (!closedCycle) {
+    if (!initialPointData.gotInitialPoint) {
+      initialPointData.initialPoint.sNo = sid;
+      initialPointData.initialPoint.xPosition = xPos;
+      initialPointData.initialPoint.yPosition = YPos;
+      initialPointData.gotInitialPoint = true;
+    }
+
+    const dotPosition = {};
+    dotPosition.sNo = sid;
+    dotPosition.xPosition = xPos;
+    dotPosition.yPosition = YPos;
+    jsonData.push(dotPosition);
+    serialNumber++;
+    console.log(jsonData);
   }
-  const dotPosition = {};
-  dotPosition.sNo = sid;
-  dotPosition.xPosition = xPos;
-  dotPosition.yPosition = YPos;
-  jsonData.push(dotPosition);
-  serialNumber++;
 };
