@@ -22,7 +22,7 @@ window.onload = () => {
   stage.canvas.height = CANVAS_WIDTH_HEIGHT;
   stage.canvas.style.backgroundColor = "#000";
 
-  stage.on("stagemousedown", stageMouseDownFunction(stage));
+  stage.addEventListener("stagemousedown", stageMouseDownFunction(stage));
   
   downloadBtn.addEventListener("click", () => {
     const a = document.createElement("a");
@@ -41,20 +41,23 @@ const stageMouseDownFunction = (stage) =>{
       var line = new createjs.Shape();
     var circle = new createjs.Shape();
     var dragger = new createjs.Container();
-    circle.graphics.beginFill(color).drawCircle(0, 0, 2);
+    circle.graphics.beginFill(color).drawCircle(0, 0, 10);
     if (
       !(Math.abs(initialPointData.initialPoint.xPosition - e.stageX) <= 3) &&
       !(Math.abs(initialPointData.initialPoint.yPosition - e.stageY) <= 3) &&
       !closedCycle
     ) {
-      // Draw line
+
+      dragger.on("pressmove", (evt) => {
+        evt.currentTarget.x = evt.stageX;
+        evt.currentTarget.y = evt.stageY;
+        stage.update();
+        console.log('Pressed');
+        
+      });
+      // Set Dragger coordinates
       dragger.x = e.stageX;
       dragger.y = e.stageY;
-
-      console.log(
-        Math.abs(initialPointData.initialPoint.xPosition),
-        Math.abs(initialPointData.initialPoint.yPosition)
-      );
       
       // line.graphics
       //   .beginStroke("#fff")
@@ -73,12 +76,15 @@ const stageMouseDownFunction = (stage) =>{
       Math.abs(initialPointData.initialPoint.xPosition - e.stageX) <= 3 &&
       Math.abs(initialPointData.initialPoint.yPosition - e.stageY) <= 3
     ) {
+
+      dragger.on("pressmove", (evt) => {
+        evt.currentTarget.x = evt.stageX;
+        evt.currentTarget.y = evt.stageY;
+        stage.update();
+      });
+
       dragger.x = e.stageX;
       dragger.y = e.stageY;
-      console.log(
-        Math.abs(initialPointData.initialPoint.xPosition - e.stageX),
-        Math.abs(initialPointData.initialPoint.yPosition - e.stageY)
-      );
       // Draw line
       // line.graphics
       //   .beginStroke("#fff")
@@ -96,10 +102,12 @@ const stageMouseDownFunction = (stage) =>{
       oldY = initialPointData.initialPoint.YPosition;
       console.info("Locked");
       closedCycle = true;
+      stageLocked = true;
     }
 
     // Show message when a closed cycle made (Lock drawing more line with dot)
     if (closedCycle) {
+      stage.removeEventListener('stagemousedown',stageMouseDownFunction(stage));
       console.info(
         "Have come to same point so drawing locked leaving a closed cycle"
       );
@@ -111,20 +119,13 @@ const stageMouseDownFunction = (stage) =>{
     dragger.addChild(line);
     dragger.addChild(circle);
     stage.addChild(dragger);
-    // stage.addChild(line);
-    // stage.addChild(circle);
     stage.update();
-    // console.log(dragger);
-
-    // dragger.add
     }
   }
 }
 
 const addDotInfo = (sid, xPos, YPos) => {
   if (!closedCycle) {
-    console.log(initialPointData.gotInitialPoint);
-    
     if (!initialPointData.gotInitialPoint) {
       initialPointData.initialPoint.sNo = sid;
       initialPointData.initialPoint.xPosition = xPos;
