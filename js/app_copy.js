@@ -27,7 +27,7 @@ window.onload = () => {
     a.download = "data.json";
     a.href =
       "data:text/json;charset=utf-8," +
-      encodeURIComponent(JSON.stringify(jsonData));
+      encodeURIComponent(JSON.stringify(jsonData,null,4));
     a.click();
   });
 };
@@ -48,13 +48,16 @@ const stageMouseDownFunction = (stage) => {
           evt.currentTarget.x = evt.stageX;
           evt.currentTarget.y = evt.stageY;
           stage.update();
-          let matchedObject = jsonData.find((obj)=>{
+
+          let matchedObject = jsonData.find((obj) => {
             return obj.sNo == evt.currentTarget.id;
           });
           matchedObject.xPosition = evt.currentTarget.x;
           matchedObject.yPosition = evt.currentTarget.y;
-          console.log(matchedObject);
-          
+          if (matchedObject == jsonData[0]) {
+            initialPointData.initialPoint.xPosition = matchedObject.xPosition;
+            initialPointData.initialPoint.yPosition = matchedObject.yPosition;
+          }
         });
 
         // Set Dragger coordinates
@@ -65,11 +68,9 @@ const stageMouseDownFunction = (stage) => {
         dragger.addChild(circle);
         stage.addChild(dragger);
         stage.update();
-        // console.log(dragger.id);
 
         // Add info to json array
         addDotInfo(dragger.id, dragger.x, dragger.y, stage);
-        console.log(jsonData);
       } else if (
         Math.abs(initialPointData.initialPoint.xPosition - e.stageX) <= 3 &&
         Math.abs(initialPointData.initialPoint.yPosition - e.stageY) <= 3
@@ -100,7 +101,6 @@ const stageMouseDownFunction = (stage) => {
           initialPointData.initialPoint.yPosition
         );
         closedCycle = true;
-        console.log(jsonData);
       }
 
       // Show message when a closed cycle made (Lock drawing more line with dot)
@@ -128,7 +128,6 @@ const addDotInfo = (sid, xPos, YPos, stage) => {
       initialPointData.initialPoint.yPosition = YPos;
       initialPointData.gotInitialPoint = true;
     }
-    console.log(sid, xPos, YPos);
     const dotPosition = {};
     dotPosition.sNo = sid;
     dotPosition.xPosition = xPos;
