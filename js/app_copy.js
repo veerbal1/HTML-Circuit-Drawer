@@ -48,6 +48,13 @@ const stageMouseDownFunction = (stage) => {
           evt.currentTarget.x = evt.stageX;
           evt.currentTarget.y = evt.stageY;
           stage.update();
+          let matchedObject = jsonData.find((obj)=>{
+            return obj.sNo == evt.currentTarget.id;
+          });
+          matchedObject.xPosition = evt.currentTarget.x;
+          matchedObject.yPosition = evt.currentTarget.y;
+          console.log(matchedObject);
+          
         });
 
         // Set Dragger coordinates
@@ -85,6 +92,7 @@ const stageMouseDownFunction = (stage) => {
         stage.addChild(dragger);
         stage.update();
         console.info("Locked");
+
         // Add info to json array in json
         addDotInfo(
           initialPointData.initialPoint.sNo,
@@ -121,7 +129,6 @@ const addDotInfo = (sid, xPos, YPos, stage) => {
       initialPointData.gotInitialPoint = true;
     }
     console.log(sid, xPos, YPos);
-
     const dotPosition = {};
     dotPosition.sNo = sid;
     dotPosition.xPosition = xPos;
