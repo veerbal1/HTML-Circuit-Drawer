@@ -54,26 +54,16 @@ const stageMouseDownFunction = (stage) => {
           stage.update();
           console.log("Pressed");
         });
+
         // Set Dragger coordinates
         dragger.x = e.stageX;
         dragger.y = e.stageY;
-
-        // line.graphics
-        //   .beginStroke("#fff")
-        //   .setStrokeStyle(3, "round")
-        //   .moveTo(oldX, oldY)
-        //   .lineTo(e.stageX, e.stageY);
-
-        // Draw Dot
-        // circle.x = e.stageX;
-        // circle.y = e.stageY;
         oldX = e.stageX;
         oldY = e.stageY;
-        // stage.addChild(line);
         dragger.addChild(circle);
-
         stage.addChild(dragger);
         stage.update();
+
       } else if (
         Math.abs(initialPointData.initialPoint.xPosition - e.stageX) <= 3 &&
         Math.abs(initialPointData.initialPoint.yPosition - e.stageY) <= 3
@@ -87,20 +77,11 @@ const stageMouseDownFunction = (stage) => {
         dragger.x = e.stageX;
         dragger.y = e.stageY;
 
-        // Draw line
-        // line.graphics
-        // .beginStroke("#fff")
-        // .setStrokeStyle(3, "round")
-        // .moveTo(oldX, oldY)
-        // .lineTo(initialPointData.initialPoint.xPosition, initialPointData.initialPoint.yPosition);
-
         // Draw Dot
         dragger.x = initialPointData.initialPoint.xPosition;
         dragger.y = initialPointData.initialPoint.YPosition;
         oldX = initialPointData.initialPoint.xPosition;
         oldY = initialPointData.initialPoint.YPosition;
-        // stage.addChild(line);
-        // dragger.addChild(circle);
 
         stage.addChild(dragger);
         stage.update();
