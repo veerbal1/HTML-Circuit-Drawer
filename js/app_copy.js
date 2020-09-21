@@ -16,7 +16,6 @@ let stageLocked = false;
 
 window.onload = () => {
   downloadBtn = document.getElementById("download");
-
   var stage = new createjs.Stage("demoCanvas");
   stage.canvas.width = CANVAS_WIDTH_HEIGHT;
   stage.canvas.height = CANVAS_WIDTH_HEIGHT;
@@ -37,8 +36,6 @@ window.onload = () => {
 const stageMouseDownFunction = (stage) => {
   return function (e) {
     if (!stageLocked) {
-      console.log("Stage Clicked");
-
       var line = new createjs.Shape();
       var circle = new createjs.Shape();
       var dragger = new createjs.Container();
@@ -52,7 +49,6 @@ const stageMouseDownFunction = (stage) => {
           evt.currentTarget.x = evt.stageX;
           evt.currentTarget.y = evt.stageY;
           stage.update();
-          console.log("Pressed");
         });
 
         // Set Dragger coordinates
@@ -104,10 +100,6 @@ const stageMouseDownFunction = (stage) => {
       // Add info to json array
       addDotInfo(serialNumber, dragger.x, dragger.y,stage,oldX,oldY);
       color = "#FF4500";
-      // dragger.addChild(line);
-      // dragger.addChild(circle);
-      // stage.addChild(dragger);
-      // stage.update();
     }
   };
 };
@@ -128,7 +120,6 @@ const addDotInfo = (sid, xPos, YPos,stage,oldX,oldY) => {
     dotPosition.yPosition = YPos;
     jsonData.push(dotPosition);
     serialNumber++;
-    // console.log(jsonData);
   }
 };
 
