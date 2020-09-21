@@ -4,7 +4,6 @@ var initialPointData = {
   initialPoint: { sNo: "", xPosition: "", yPosition: "" },
 };
 
-let serialNumber = 1;
 let oldX;
 let oldY;
 let color = "#00FF00";
@@ -59,7 +58,11 @@ const stageMouseDownFunction = (stage) => {
         dragger.addChild(circle);
         stage.addChild(dragger);
         stage.update();
+        // console.log(dragger.id);
 
+        // Add info to json array
+        addDotInfo(dragger.id, dragger.x, dragger.y, stage);
+        console.log(jsonData);
       } else if (
         Math.abs(initialPointData.initialPoint.xPosition - e.stageX) <= 3 &&
         Math.abs(initialPointData.initialPoint.yPosition - e.stageY) <= 3
@@ -82,7 +85,14 @@ const stageMouseDownFunction = (stage) => {
         stage.addChild(dragger);
         stage.update();
         console.info("Locked");
+        // Add info to json array in json
+        addDotInfo(
+          initialPointData.initialPoint.sNo,
+          initialPointData.initialPoint.xPosition,
+          initialPointData.initialPoint.yPosition
+        );
         closedCycle = true;
+        console.log(jsonData);
       }
 
       // Show message when a closed cycle made (Lock drawing more line with dot)
@@ -96,15 +106,12 @@ const stageMouseDownFunction = (stage) => {
           "Have come to same point so drawing locked leaving a closed cycle"
         );
       }
-
-      // Add info to json array
-      addDotInfo(serialNumber, dragger.x, dragger.y,stage,oldX,oldY);
       color = "#FF4500";
     }
   };
 };
 
-const addDotInfo = (sid, xPos, YPos,stage,oldX,oldY) => {
+const addDotInfo = (sid, xPos, YPos, stage) => {
   if (!closedCycle) {
     if (!initialPointData.gotInitialPoint) {
       stage.on("stagemousemove", moveLine(stage));
@@ -113,13 +120,13 @@ const addDotInfo = (sid, xPos, YPos,stage,oldX,oldY) => {
       initialPointData.initialPoint.yPosition = YPos;
       initialPointData.gotInitialPoint = true;
     }
+    console.log(sid, xPos, YPos);
 
     const dotPosition = {};
     dotPosition.sNo = sid;
     dotPosition.xPosition = xPos;
     dotPosition.yPosition = YPos;
     jsonData.push(dotPosition);
-    serialNumber++;
   }
 };
 
