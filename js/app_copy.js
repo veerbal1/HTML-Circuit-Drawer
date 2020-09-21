@@ -23,7 +23,7 @@ window.onload = () => {
   stage.canvas.style.backgroundColor = "#000";
 
   stage.addEventListener("stagemousedown", stageMouseDownFunction(stage));
-  
+
   downloadBtn.addEventListener("click", () => {
     const a = document.createElement("a");
     a.download = "data.json";
@@ -34,95 +34,98 @@ window.onload = () => {
   });
 };
 
-
-const stageMouseDownFunction = (stage) =>{
-  return function(e){
+const stageMouseDownFunction = (stage) => {
+  return function (e) {
     if (!stageLocked) {
+      console.log("Stage Clicked");
+
       var line = new createjs.Shape();
-    var circle = new createjs.Shape();
-    var dragger = new createjs.Container();
-    circle.graphics.beginFill(color).drawCircle(0, 0, 10);
-    if (
-      !(Math.abs(initialPointData.initialPoint.xPosition - e.stageX) <= 3) &&
-      !(Math.abs(initialPointData.initialPoint.yPosition - e.stageY) <= 3) &&
-      !closedCycle
-    ) {
+      var circle = new createjs.Shape();
+      var dragger = new createjs.Container();
+      circle.graphics.beginFill(color).drawCircle(0, 0, 10);
+      if (
+        !(Math.abs(initialPointData.initialPoint.xPosition - e.stageX) <= 3) &&
+        !(Math.abs(initialPointData.initialPoint.yPosition - e.stageY) <= 3) &&
+        !closedCycle
+      ) {
+        dragger.on("pressmove", (evt) => {
+          evt.currentTarget.x = evt.stageX;
+          evt.currentTarget.y = evt.stageY;
+          stage.update();
+          console.log("Pressed");
+        });
+        // Set Dragger coordinates
+        dragger.x = e.stageX;
+        dragger.y = e.stageY;
 
-      dragger.on("pressmove", (evt) => {
-        evt.currentTarget.x = evt.stageX;
-        evt.currentTarget.y = evt.stageY;
+        // line.graphics
+        //   .beginStroke("#fff")
+        //   .setStrokeStyle(1, "round")
+        //   .moveTo(oldX, oldY)
+        //   .lineTo(e.stageX, e.stageY);
+
+        // Draw Dot
+        // circle.x = e.stageX;
+        // circle.y = e.stageY;
+        oldX = e.stageX;
+        oldY = e.stageY;
+        dragger.addChild(line);
+        dragger.addChild(circle);
+        stage.addChild(dragger);
         stage.update();
-        console.log('Pressed');
-        
-      });
-      // Set Dragger coordinates
-      dragger.x = e.stageX;
-      dragger.y = e.stageY;
-      
-      // line.graphics
-      //   .beginStroke("#fff")
-      //   .setStrokeStyle(1, "round")
-      //   .moveTo(oldX, oldY)
-      //   .lineTo(e.stageX, e.stageY);
-        
+      } else if (
+        Math.abs(initialPointData.initialPoint.xPosition - e.stageX) <= 3 &&
+        Math.abs(initialPointData.initialPoint.yPosition - e.stageY) <= 3
+      ) {
+        dragger.on("pressmove", (evt) => {
+          evt.currentTarget.x = evt.stageX;
+          evt.currentTarget.y = evt.stageY;
+          stage.update();
+        });
 
-      // Draw Dot
-      // circle.x = e.stageX;
-      // circle.y = e.stageY;
-      oldX = e.stageX;
-      oldY = e.stageY;
-      
-    } else if (
-      Math.abs(initialPointData.initialPoint.xPosition - e.stageX) <= 3 &&
-      Math.abs(initialPointData.initialPoint.yPosition - e.stageY) <= 3
-    ) {
+        dragger.x = e.stageX;
+        dragger.y = e.stageY;
+        // Draw line
+        // line.graphics
+        //   .beginStroke("#fff")
+        //   .setStrokeStyle(1, "round")
+        //   .moveTo(oldX, oldY)
+        //   .lineTo(
+        //     initialPointData.initialPoint.xPosition,
+        //     initialPointData.initialPoint.yPosition
+        //   );
 
-      dragger.on("pressmove", (evt) => {
-        evt.currentTarget.x = evt.stageX;
-        evt.currentTarget.y = evt.stageY;
-        stage.update();
-      });
+        // Draw Dot
+        dragger.x = initialPointData.initialPoint.xPosition;
+        dragger.y = initialPointData.initialPoint.YPosition;
+        oldX = initialPointData.initialPoint.xPosition;
+        oldY = initialPointData.initialPoint.YPosition;
+        console.info("Locked");
+        closedCycle = true;
+      }
 
-      dragger.x = e.stageX;
-      dragger.y = e.stageY;
-      // Draw line
-      // line.graphics
-      //   .beginStroke("#fff")
-      //   .setStrokeStyle(1, "round")
-      //   .moveTo(oldX, oldY)
-      //   .lineTo(
-      //     initialPointData.initialPoint.xPosition,
-      //     initialPointData.initialPoint.yPosition
-      //   );
+      // Show message when a closed cycle made (Lock drawing more line with dot)
+      if (closedCycle) {
+        stage.removeEventListener(
+          "stagemousedown",
+          stageMouseDownFunction(stage)
+        );
+        stageLocked = true;
+        console.info(
+          "Have come to same point so drawing locked leaving a closed cycle"
+        );
+      }
 
-      // Draw Dot
-      dragger.x = initialPointData.initialPoint.xPosition;
-      dragger.y = initialPointData.initialPoint.YPosition;
-      oldX = initialPointData.initialPoint.xPosition;
-      oldY = initialPointData.initialPoint.YPosition;
-      console.info("Locked");
-      closedCycle = true;
-      stageLocked = true;
+      // Add info to json array
+      addDotInfo(serialNumber, dragger.x, dragger.y);
+      color = "#FF4500";
+      // dragger.addChild(line);
+      // dragger.addChild(circle);
+      // stage.addChild(dragger);
+      // stage.update();
     }
-
-    // Show message when a closed cycle made (Lock drawing more line with dot)
-    if (closedCycle) {
-      stage.removeEventListener('stagemousedown',stageMouseDownFunction(stage));
-      console.info(
-        "Have come to same point so drawing locked leaving a closed cycle"
-      );
-    }
-
-    // Add info to json array
-    addDotInfo(serialNumber, dragger.x, dragger.y);
-    color = "#FF4500";
-    dragger.addChild(line);
-    dragger.addChild(circle);
-    stage.addChild(dragger);
-    stage.update();
-    }
-  }
-}
+  };
+};
 
 const addDotInfo = (sid, xPos, YPos) => {
   if (!closedCycle) {
