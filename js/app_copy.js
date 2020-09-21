@@ -58,19 +58,20 @@ const stageMouseDownFunction = (stage) => {
         dragger.x = e.stageX;
         dragger.y = e.stageY;
 
-        // line.graphics
-        //   .beginStroke("#fff")
-        //   .setStrokeStyle(1, "round")
-        //   .moveTo(oldX, oldY)
-        //   .lineTo(e.stageX, e.stageY);
+        line.graphics
+          .beginStroke("#fff")
+          .setStrokeStyle(3, "round")
+          .moveTo(oldX, oldY)
+          .lineTo(e.stageX, e.stageY);
 
         // Draw Dot
         // circle.x = e.stageX;
         // circle.y = e.stageY;
         oldX = e.stageX;
         oldY = e.stageY;
-        dragger.addChild(line);
+        stage.addChild(line);
         dragger.addChild(circle);
+
         stage.addChild(dragger);
         stage.update();
       } else if (
@@ -86,20 +87,21 @@ const stageMouseDownFunction = (stage) => {
         dragger.x = e.stageX;
         dragger.y = e.stageY;
         // Draw line
-        // line.graphics
-        //   .beginStroke("#fff")
-        //   .setStrokeStyle(1, "round")
-        //   .moveTo(oldX, oldY)
-        //   .lineTo(
-        //     initialPointData.initialPoint.xPosition,
-        //     initialPointData.initialPoint.yPosition
-        //   );
-
+        line.graphics
+        .beginStroke("#fff")
+        .setStrokeStyle(3, "round")
+        .moveTo(oldX, oldY)
+        .lineTo(initialPointData.initialPoint.xPosition, initialPointData.initialPoint.yPosition);
         // Draw Dot
         dragger.x = initialPointData.initialPoint.xPosition;
         dragger.y = initialPointData.initialPoint.YPosition;
         oldX = initialPointData.initialPoint.xPosition;
         oldY = initialPointData.initialPoint.YPosition;
+        stage.addChild(line);
+        // dragger.addChild(circle);
+
+        stage.addChild(dragger);
+        stage.update();
         console.info("Locked");
         closedCycle = true;
       }
@@ -117,7 +119,7 @@ const stageMouseDownFunction = (stage) => {
       }
 
       // Add info to json array
-      addDotInfo(serialNumber, dragger.x, dragger.y);
+      addDotInfo(serialNumber, dragger.x, dragger.y,stage,oldX,oldY);
       color = "#FF4500";
       // dragger.addChild(line);
       // dragger.addChild(circle);
@@ -127,9 +129,10 @@ const stageMouseDownFunction = (stage) => {
   };
 };
 
-const addDotInfo = (sid, xPos, YPos) => {
+const addDotInfo = (sid, xPos, YPos,stage,oldX,oldY) => {
   if (!closedCycle) {
     if (!initialPointData.gotInitialPoint) {
+      stage.on("stagemousemove", moveLine(stage));
       initialPointData.initialPoint.sNo = sid;
       initialPointData.initialPoint.xPosition = xPos;
       initialPointData.initialPoint.yPosition = YPos;
@@ -144,4 +147,18 @@ const addDotInfo = (sid, xPos, YPos) => {
     serialNumber++;
     // console.log(jsonData);
   }
+};
+
+const moveLine = (stage) => {
+  var shape = new createjs.Shape();
+  return function (evt) {
+    stage.addChild(shape);
+    shape.graphics.clear();
+    shape.graphics
+      .beginStroke("#fff")
+      .setStrokeStyle(3, "round")
+      .moveTo(oldX, oldY)
+      .lineTo(evt.stageX, evt.stageY);
+    stage.update();
+  };
 };
