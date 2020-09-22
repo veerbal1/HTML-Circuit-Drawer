@@ -35,7 +35,7 @@ window.onload = () => {
 const stageMouseDownFunction = (stage) => {
   return function (e) {
     if (!stageLocked) {
-      var line = new createjs.Shape();
+      // var line = new createjs.Shape();
       var circle = new createjs.Shape();
       var dragger = new createjs.Container();
       circle.graphics.beginFill(color).drawCircle(0, 0, 3);
@@ -44,6 +44,7 @@ const stageMouseDownFunction = (stage) => {
         !(Math.abs(initialPointData.initialPoint.yPosition - e.stageY) <= 3) &&
         !closedCycle
       ) {
+        // For moving dot on click and drag
         dragger.on("pressmove", (evt) => {
           evt.currentTarget.x = evt.stageX;
           evt.currentTarget.y = evt.stageY;
@@ -52,6 +53,7 @@ const stageMouseDownFunction = (stage) => {
           let matchedObject = jsonData.find((obj) => {
             return obj.sNo == evt.currentTarget.id;
           });
+
           matchedObject.xPosition = evt.currentTarget.x;
           matchedObject.yPosition = evt.currentTarget.y;
           if (matchedObject == jsonData[0]) {
@@ -94,7 +96,7 @@ const stageMouseDownFunction = (stage) => {
         stage.update();
         console.info("Locked");
 
-        // Add info to json array in json
+        // Add locked state (at end) info to json array.
         addDotInfo(
           initialPointData.initialPoint.sNo,
           initialPointData.initialPoint.xPosition,
@@ -111,7 +113,7 @@ const stageMouseDownFunction = (stage) => {
         );
         stageLocked = true;
         console.info(
-          "Have come to same point so drawing locked leaving a closed cycle"
+          "Have come to same initial point from where it started so drawing locked leaving a closed cycle."
         );
       }
       color = "#FF4500";
@@ -136,6 +138,7 @@ const addDotInfo = (sid, xPos, YPos, stage) => {
   }
 };
 
+// Line dragging with mouse around dot.
 const moveLine = (stage) => {
   var shape = new createjs.Shape();
   return function (evt) {
